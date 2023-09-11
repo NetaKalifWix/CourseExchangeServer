@@ -1,4 +1,5 @@
-const fs = require("fs").promises;
+const fs = require("fs");
+const fsPromises = require("fs").promises;
 const { log } = require("console");
 const cors = require("cors");
 const express = require("express");
@@ -13,7 +14,7 @@ app.get("", (req, res) => {
 app.get("/cycles", (req, res) => {
   return res.status(200).send(cycles);
 });
-app.patch("/delete", (req, res) => {
+app.patch("/delete", async (req, res) => {
   const toDelete = req.body.toDelete;
 
   exchanges = exchanges.filter(
@@ -23,7 +24,7 @@ app.patch("/delete", (req, res) => {
       person.currentCourse !== toDelete.currentCourse ||
       person.desiredCourse !== toDelete.desiredCourse
   );
-  fs.writeFile("exchanges.json", JSON.stringify(exchanges));
+  await fsPromises.writeFile("exchanges.json", JSON.stringify(exchanges));
   graph.deleteExchange(
     toDelete.currentCourse,
     toDelete.desiredCourse,
@@ -36,7 +37,7 @@ app.patch("/delete", (req, res) => {
 
 app.patch("/add", async (req, res) => {
   exchanges.push(req.body.exchange);
-  await fs.writeFile("exchanges.json", JSON.stringify(exchanges));
+  await fsPromises.writeFile("exchanges.json", JSON.stringify(exchanges));
   graph.addExchange(
     req.body.exchange.currentCourse,
     req.body.exchange.desiredCourse,
@@ -48,15 +49,25 @@ app.patch("/add", async (req, res) => {
 });
 
 const readFile = async (filename) => {
-  const dataBuffer = await fs.readFile(filename + ".json");
+  const dataBuffer = await fsPromises.readFile(filename + ".json");
   const dataJson = dataBuffer.toString();
   return JSON.parse(dataJson);
 };
 
+app.get("/backup", async (req, res) => {
+  const filename = "exchanges.json";
+  const stream = fs.createReadStream(filename);
+  res.set({
+    "Content-Disposition": `attachement; filename=${filename}`,
+    "Content-Type": "application/octet-stream",
+  });
+  stream.pipe(res);
+});
+
 let exchanges, courses, cycles;
 const graph = new CourseExchangeGraph();
 
-app.listen(3001, async () => {
+app.listen(3002, async () => {
   console.log("server started");
   exchanges = await readFile("exchanges");
   courses = await readFile("courses");
