@@ -11,7 +11,6 @@ app.get("", (req, res) => {
   return res.status(200).send({ exchanges, courses });
 });
 app.get("/cycles", (req, res) => {
-  console.log(cycles);
   return res.status(200).send(cycles);
 });
 app.patch("/delete", (req, res) => {
