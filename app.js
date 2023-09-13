@@ -14,6 +14,7 @@ app.get("", (req, res) => {
 app.get("/cycles", (req, res) => {
   return res.status(200).send(cycles);
 });
+
 app.patch("/delete", async (req, res) => {
   const toDelete = req.body.toDelete;
 
@@ -31,7 +32,7 @@ app.patch("/delete", async (req, res) => {
     toDelete.name,
     toDelete.phone
   );
-  cycles = graph.findCycles();
+  cycles = graph.findAllCycles();
   return res.status(200).send(exchanges);
 });
 
@@ -79,5 +80,5 @@ app.listen(3002, async () => {
       person.phone
     )
   );
-  cycles = graph.findCycles();
+  cycles = graph.findAllCycles();
 });
