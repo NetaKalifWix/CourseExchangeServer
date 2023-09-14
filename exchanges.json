@@ -1,1 +1,164 @@
-[{"name":"n","phone":"1","currentCourse":"נושאים בעיבוד שפה טבעית","desiredCourse":"נושאים בחישוב מדעי"},{"name":"n","phone":"1","currentCourse":"נושאים בחישוב מדעי","desiredCourse":"נושאים בצביעות חסרות קונפליקטים"},{"name":"n","phone":"1","currentCourse":"נושאים בצביעות חסרות קונפליקטים","desiredCourse":"נושאים בעיבוד שפה טבעית"},{"name":"b","phone":"1","currentCourse":"נושאים בגרפים רנדומיים","desiredCourse":"נושאים בעיבוד תמונה"},{"name":"b","phone":"1","currentCourse":"נושאים בעיבוד תמונה","desiredCourse":"נושאים בגרפים רנדומיים"}]
+[
+  {
+    "name": "naor cohav",
+    "phone": "0586126161",
+    "currentCourse": "נושאים בעיבוד שפה טבעית",
+    "desiredCourse": "נושאים באבטחת רשתות"
+  },
+  {
+    "name": "Guy",
+    "phone": "0542449724",
+    "currentCourse": "חישוב קוונטי",
+    "desiredCourse": "נושאים באבטחת רשתות"
+  },
+  {
+    "name": "Guy",
+    "phone": "0542449724",
+    "currentCourse": "חישוב קוונטי",
+    "desiredCourse": "נושאים מערכות הגנה לרשת"
+  },
+  {
+    "name": "Yosef Shawah",
+    "phone": "0528537694",
+    "currentCourse": "גרפיקה של המחשב",
+    "desiredCourse": "תכנות מערכות מבוזרות"
+  },
+  {
+    "name": "Shay uzan",
+    "phone": "0544680441",
+    "currentCourse": "מבוא לראייה חישובית וביולוגית",
+    "desiredCourse": "נושאים בחישוב מדעי"
+  },
+  {
+    "name": "Shay uzan",
+    "phone": "0544680441",
+    "currentCourse": "מבוא לראייה חישובית וביולוגית",
+    "desiredCourse": "נושאים מערכות הגנה לרשת"
+  },
+  {
+    "name": "Shay uzan",
+    "phone": "0544680441",
+    "currentCourse": "מבוא לראייה חישובית וביולוגית",
+    "desiredCourse": "נושאים בעיבוד תמונה"
+  },
+  {
+    "name": "Shay uzan",
+    "phone": "0544680441",
+    "currentCourse": "מבוא לראייה חישובית וביולוגית",
+    "desiredCourse": "למידה עמוקה"
+  },
+  {
+    "name": "Shay uzan",
+    "phone": "0544680441",
+    "currentCourse": "גרפיקה של המחשב",
+    "desiredCourse": "נושאים בעיבוד תמונה"
+  },
+  {
+    "name": "Shay uzan",
+    "phone": "0544680441",
+    "currentCourse": "גרפיקה של המחשב",
+    "desiredCourse": "נושאים מערכות הגנה לרשת"
+  },
+  {
+    "name": "Shay uzan",
+    "phone": "0544680441",
+    "currentCourse": "גרפיקה של המחשב",
+    "desiredCourse": "למידה עמוקה"
+  },
+  {
+    "name": "Shay uzan",
+    "phone": "0544680441",
+    "currentCourse": "גרפיקה של המחשב",
+    "desiredCourse": "נושאים בחישוב מדעי"
+  },
+  {
+    "name": "Shay uzan",
+    "phone": "0544680441",
+    "currentCourse": "מבוא לראייה חישובית וביולוגית",
+    "desiredCourse": "תכנות מערכות מבוזרות"
+  },
+  {
+    "name": "Shay uzan",
+    "phone": "0544680441",
+    "currentCourse": "גרפיקה של המחשב",
+    "desiredCourse": "תכנות מערכות מבוזרות"
+  },
+  {
+    "name": "Benjamin Sabbag",
+    "phone": "0523020782",
+    "currentCourse": "נושאים בצביעות חסרות קונפליקטים",
+    "desiredCourse": "נושאים באופטימיזציה סטוכסטית"
+  },
+  {
+    "name": "Benjamin Sabbag",
+    "phone": "0523020782",
+    "currentCourse": "נושאים בצביעות חסרות קונפליקטים",
+    "desiredCourse": "נושאים באבטחת רשתות"
+  },
+  {
+    "name": "Lior levy",
+    "phone": "0502999490",
+    "currentCourse": "למידה מבוססת חיזוקים ותכנון משימה אוטומטי",
+    "desiredCourse": "יישומים של חישוב מדעי"
+  },
+  {
+    "name": "naor cohav",
+    "phone": "0586126161",
+    "currentCourse": "נושאים בחישוב מדעי",
+    "desiredCourse": "נושאים באופטימיזציה סטוכסטית"
+  },
+  {
+    "name": "Benjamin Sabbag",
+    "phone": "0523020782",
+    "currentCourse": "נושאים בצביעות חסרות קונפליקטים",
+    "desiredCourse": "נושאים מערכות הגנה לרשת"
+  },
+  {
+    "name": "Lior levy",
+    "phone": "0502999490",
+    "currentCourse": "למידה מבוססת חיזוקים ותכנון משימה אוטומטי",
+    "desiredCourse": "יישומים של חישוב מדעי"
+  },
+  {
+    "name": "Lior levy",
+    "phone": "0502999490",
+    "currentCourse": "למידה מבוססת חיזוקים ותכנון משימה אוטומטי",
+    "desiredCourse": "קבלת החלטות ושימושיה למדעי המחשב"
+  },
+  {
+    "name": "Lior levy",
+    "phone": "0502999490",
+    "currentCourse": "עיבוד תמונות ספרתי",
+    "desiredCourse": "קבלת החלטות ושימושיה למדעי המחשב"
+  },
+  {
+    "name": "Lior levy",
+    "phone": "0502999490",
+    "currentCourse": "עיבוד תמונות ספרתי",
+    "desiredCourse": "יישומים של חישוב מדעי"
+  },
+  {
+    "name": "Guy",
+    "phone": "",
+    "currentCourse": "גרפים גיאומטריים",
+    "desiredCourse": "יישומים של חישוב מדעי"
+  },
+  {
+    "name": "Shahar",
+    "phone": "0505611131",
+    "currentCourse": "תכנות מערכות מבוזרות",
+    "desiredCourse": "מערכות בסיס נתונים"
+  },
+  {
+    "name": "Shahar",
+    "phone": "0505611131",
+    "currentCourse": "תכנות מערכות מבוזרות",
+    "desiredCourse": "קבלת החלטות ושימושיה למדעי המחשב"
+  },
+  {
+    "name": "Guy",
+    "phone": "0542548123",
+    "currentCourse": "גרפים גיאומטריים",
+    "desiredCourse": "יישומים של חישוב מדעי"
+  }
+]
