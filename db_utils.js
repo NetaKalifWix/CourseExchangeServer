@@ -41,15 +41,15 @@ class Database {
     return await this.run_query("INSERT INTO exchanges VALUES($1, $2, $3, $4);", [
       exchange.name,
       exchange.phone,
-      exchange.currentCourse,
-      exchange.desiredCourse
+      exchange.currentcourse,
+      exchange.desiredcourse
     ]);
   }
   async delete(exchange) {
     return await this.run_query("DELETE FROM exchanges WHERE phone=$1 AND currentCourse=$2 AND desiredCourse=$3 RETURNING *;", [
       exchange.phone,
-      exchange.currentCourse,
-      exchange.desiredCourse
+      exchange.currentcourse,
+      exchange.desiredcourse
     ]);
   }
 
