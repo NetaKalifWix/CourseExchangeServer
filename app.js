@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 const db = Database.connect(false);
-
+var courses;
 app.get("", (req, res) => {
   return res.status(200).send({ exchanges, courses });
 });
@@ -56,5 +56,6 @@ app.get("/backup", async (req, res) => {
 });
 
 app.listen(3002, async () => {
+  courses = await readFile("courses");
   console.log("server started");
 });
