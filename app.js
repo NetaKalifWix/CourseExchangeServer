@@ -44,6 +44,10 @@ const readFile = async (filename) => {
   return JSON.parse(dataJson);
 };
 
+app.get("/reset_db", async (req, res) => {
+  res.send(await db.run_query("DELETE FROM exchanges"));
+});
+
 app.get("/backup", async (req, res) => {
   const Readable = require('stream').Readable;
   const stream = new Readable();
