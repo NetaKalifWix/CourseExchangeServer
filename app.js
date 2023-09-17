@@ -3,13 +3,16 @@ const fsPromises = require("fs").promises;
 const Database = require("./db_utils");
 const { log } = require("console");
 const cors = require("cors");
+const dotenv = require("dotenv");
 const express = require("express");
 const CourseExchangeGraph = require("./logic");
 const app = express();
 app.use(express.json());
 app.use(cors());
 var db, courses, exchanges;
-app.get("", async (req, res) => {
+console.log("Environment variables", process.env);
+app.put("/", async (req, res, next) => { console.log("Request:", req.url, req.query, req.params, req.body); next();});
+app.get("/", async (req, res) => {
   exchanges = await db.get();
   return res.status(200).send({ exchanges, courses });
 });
@@ -18,7 +21,6 @@ app.get("/cycles", async (req, res) => {
   let cycles = CourseExchangeGraph.fromExchanges(exchanges).findCycles();
   return res.status(200).send(cycles);
 });
-
 app.patch("/delete", async (req, res) => {
   let toDelete = req.body.toDelete;
   await db.delete(toDelete);
