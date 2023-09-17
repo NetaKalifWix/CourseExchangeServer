@@ -45,7 +45,6 @@ const readFile = async (filename) => {
 };
 
 app.get("/backup", async (req, res) => {
-  let exchanges = JSON.stringify(await db.get());
   const Readable = require('stream').Readable;
   const stream = new Readable();
   res.set({
@@ -53,7 +52,7 @@ app.get("/backup", async (req, res) => {
     "Content-Type": "application/octet-stream",
   });
   stream.pipe(res);
-  stream.push(exchanges);
+  stream.push(JSON.stringify(await db.get()));
   stream.push(null);
 });
 

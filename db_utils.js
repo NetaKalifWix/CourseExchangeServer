@@ -54,7 +54,11 @@ class Database {
   }
 
   async get() {
-    return await this.run_query("SELECT * from exchanges;");
+    return (await this.run_query("SELECT * from exchanges;")).map(exchange => ({
+      ...exchange,
+      currentCourse: exchange.currentcourse,
+      desiredCourse: exchange.desiredcourse
+    }));
   }
 
   async run_query(query_string, values) {

@@ -90,21 +90,21 @@ class CourseExchangeGraph {
     return graph;
   }
 
-  addExchange(courseA, courseB, studentName, phone) {
+  addExchange(courseA, courseB, name, phone) {
     if (!this.graph.has(courseA)) {
       this.graph.set(courseA, []);
     }
-    this.graph.get(courseA).push({ courseB, studentName, phone });
+    this.graph.get(courseA).push({ courseB, name, phone });
   }
 
-  deleteExchange(courseA, courseB, studentName, phone) {
+  deleteExchange(courseA, courseB, name, phone) {
     if (this.graph.has(courseA)) {
       this.graph.set(
         courseA,
         this.graph.get(courseA).filter((exchange) => {
           return (
             exchange.courseB !== courseB ||
-            exchange.studentName !== studentName ||
+            exchange.name !== name ||
             exchange.phone !== phone
           );
         })
@@ -124,7 +124,7 @@ class CourseExchangeGraph {
       }
     )));
     return GraphAlgorithms.dfs_find_all_cycles(G).map(cycle => cycle.map(edge => 
-      ({...edge, courseA: G.V[edge.courseA], courseB: G.V[edge.courseB]})));
+      ({...edge, currentCourse: G.V[edge.courseA], desiredCourse: G.V[edge.courseB]})));
   }
 }
 module.exports = CourseExchangeGraph;
