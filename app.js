@@ -9,19 +9,21 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 const db = Database.connect(false);
-var courses;
-app.get("", (req, res) => {
+var courses, exchanges;
+app.get("", async (req, res) => {
+  exchanges = await db.get();
   return res.status(200).send({ exchanges, courses });
 });
 app.get("/cycles", async (req, res) => {
-  let cycles = CourseExchangeGraph.fromExchanges(await db.get()).findCycles();
+  exchanges = await db.get();
+  let cycles = CourseExchangeGraph.fromExchanges(exchanges).findCycles();
   return res.status(200).send(cycles);
 });
 
 app.patch("/delete", async (req, res) => {
   let toDelete = req.body.toDelete;
   await db.delete(toDelete);
-  let exchanges = await db.get();
+  exchanges = await db.get();
   return res.status(200).send(exchanges);
 });
 
@@ -32,7 +34,7 @@ app.patch("/add", async (req, res) => {
     name: req.body.exchange.name,
     phone: req.body.exchange.phone
   });
-  let exchanges = db.get();
+  exchanges = await db.get();
   return res.status(200).send(exchanges);
 });
 
