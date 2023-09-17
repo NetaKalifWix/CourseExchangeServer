@@ -1,5 +1,6 @@
 const fs = require("fs");
 const fsPromises = require("fs").promises;
+const Database = require("./db_utils");
 const { log } = require("console");
 const cors = require("cors");
 const express = require("express");
@@ -7,45 +8,31 @@ const CourseExchangeGraph = require("./logic");
 const app = express();
 app.use(express.json());
 app.use(cors());
+const db = Database.connect(false);
 
 app.get("", (req, res) => {
   return res.status(200).send({ exchanges, courses });
 });
-app.get("/cycles", (req, res) => {
+app.get("/cycles", async (req, res) => {
+  let cycles = CourseExchangeGraph.fromExchanges(await db.get()).findCycles();
   return res.status(200).send(cycles);
 });
 
 app.patch("/delete", async (req, res) => {
-  const toDelete = req.body.toDelete;
-
-  exchanges = exchanges.filter(
-    (person) =>
-      person.name !== toDelete.name ||
-      person.phone !== toDelete.phone ||
-      person.currentCourse !== toDelete.currentCourse ||
-      person.desiredCourse !== toDelete.desiredCourse
-  );
-  await fsPromises.writeFile("exchanges.json", JSON.stringify(exchanges));
-  graph.deleteExchange(
-    toDelete.currentCourse,
-    toDelete.desiredCourse,
-    toDelete.name,
-    toDelete.phone
-  );
-  cycles = graph.findAllCycles();
+  let toDelete = req.body.toDelete;
+  await db.delete(toDelete);
+  let exchanges = await db.get();
   return res.status(200).send(exchanges);
 });
 
 app.patch("/add", async (req, res) => {
-  exchanges.push(req.body.exchange);
-  await fsPromises.writeFile("exchanges.json", JSON.stringify(exchanges));
-  graph.addExchange(
-    req.body.exchange.currentCourse,
-    req.body.exchange.desiredCourse,
-    req.body.exchange.name,
-    req.body.exchange.phone
-  );
-  cycles = graph.findCycles();
+  await db.add({
+    currentcourse: req.body.exchange.currentCourse,
+    desiredcourse: req.body.exchange.desiredCourse,
+    name: req.body.exchange.name,
+    phone: req.body.exchange.phone
+  });
+  let exchanges = db.get();
   return res.status(200).send(exchanges);
 });
 
@@ -56,29 +43,18 @@ const readFile = async (filename) => {
 };
 
 app.get("/backup", async (req, res) => {
-  const filename = "exchanges.json";
-  const stream = fs.createReadStream(filename);
+  let exchanges = JSON.stringify(await db.get());
+  const Readable = require('stream').Readable;
+  const stream = new Readable();
   res.set({
     "Content-Disposition": `attachement; filename=${filename}`,
     "Content-Type": "application/octet-stream",
   });
   stream.pipe(res);
+  stream.push(exchanges);
+  stream.push(null);
 });
-
-let exchanges, courses, cycles;
-const graph = new CourseExchangeGraph();
 
 app.listen(3002, async () => {
   console.log("server started");
-  exchanges = await readFile("exchanges");
-  courses = await readFile("courses");
-  exchanges.map((person) =>
-    graph.addExchange(
-      person.currentCourse,
-      person.desiredCourse,
-      person.name,
-      person.phone
-    )
-  );
-  cycles = graph.findAllCycles();
 });
