@@ -8,8 +8,7 @@ const CourseExchangeGraph = require("./logic");
 const app = express();
 app.use(express.json());
 app.use(cors());
-const db = Database.connect(false);
-var courses, exchanges;
+var db, courses, exchanges;
 app.get("", async (req, res) => {
   exchanges = await db.get();
   return res.status(200).send({ exchanges, courses });
@@ -58,6 +57,7 @@ app.get("/backup", async (req, res) => {
 });
 
 app.listen(3002, async () => {
+  db = await Database.connect(true);
   courses = await readFile("courses");
   console.log("server started");
 });
