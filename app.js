@@ -61,7 +61,7 @@ app.get("/backup", async (req, res) => {
 });
 
 app.listen(3002, async () => {
-  db = await Database.connect();
+  db = await Database.connect(true);
   courses = await readFile("courses");
   console.log("server started");
 });
