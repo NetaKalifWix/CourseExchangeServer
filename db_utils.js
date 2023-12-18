@@ -20,6 +20,7 @@ class Database {
     const db = new Database(internal);
     try {
       await db.client.connect();
+      await db.create_tables();
       console.log("Connected to database");
     } catch (err) {
       console.log("Connection to database failed", err);

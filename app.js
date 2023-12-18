@@ -60,7 +60,7 @@ app.get("/backup", async (req, res) => {
   stream.push(null);
 });
 
-app.listen(3002, async () => {
+app.listen(80, '0.0.0.0', async () => {
   db = await Database.connect();
   courses = await readFile("courses");
   console.log("server started");
