@@ -19,8 +19,6 @@ class GraphAlgorithms {
       dfs.c[u] = 2;
     };
     for (let u of vert_order) if (dfs.c[u] == 0) dfs_visit(u);
-
-    console.log("DFS", dfs);
     for (let [u, s] of cycles_last_vertex) {
       var cycle = [s];
       while (u != s) {
@@ -84,6 +82,7 @@ class CourseExchangeGraph {
     this.graph = new Map();
   }
 
+
   static fromExchanges(exchanges) {
     const graph = new CourseExchangeGraph();
     exchanges.forEach(ex => graph.addExchange(ex.currentcourse, ex.desiredcourse, ex.name, ex.phone));
@@ -100,8 +99,8 @@ class CourseExchangeGraph {
   deleteExchange(courseA, courseB, name, phone) {
     if (this.graph.has(courseA)) {
       this.graph.set(
-        courseA,
-        this.graph.get(courseA).filter((exchange) => {
+        currentCourse,
+        this.graph.get(currentCourse).filter((exchange) => {
           return (
             exchange.courseB !== courseB ||
             exchange.name !== name ||
