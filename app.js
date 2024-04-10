@@ -9,16 +9,22 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 var db, courses, exchanges;
+
 app.get("/", async (req, res) => {
+  console.log("get from /");
   exchanges = await db.get();
-  return res.status(200).send({data: { exchanges, courses }});
+  return res.status(200).send({ exchanges, courses });
 });
+
 app.get("/cycles", async (req, res) => {
+  console.log("get from /cycles");
   exchanges = await db.get();
   let cycles = CourseExchangeGraph.fromExchanges(exchanges).findCycles();
   return res.status(200).send(cycles);
 });
+
 app.patch("/delete", async (req, res) => {
+  console.log("get from /delete");
   await db.delete({
     ...req.body.toDelete,
     currentcourse: req.body.toDelete.currentCourse,
@@ -29,6 +35,7 @@ app.patch("/delete", async (req, res) => {
 });
 
 app.patch("/add", async (req, res) => {
+  console.log("get from /add");
   await db.add({
     currentcourse: req.body.exchange.currentCourse,
     desiredcourse: req.body.exchange.desiredCourse,
@@ -46,10 +53,12 @@ const readFile = async (filename) => {
 };
 
 app.get("/reset_db", async (req, res) => {
+  console.log("get from /reset_db");
   res.send(await db.run_query("DELETE FROM exchanges"));
 });
 
 app.get("/backup", async (req, res) => {
+  console.log("get from /backup");
   const Readable = require("stream").Readable;
   const stream = new Readable();
   res.set({
