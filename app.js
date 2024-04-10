@@ -11,7 +11,7 @@ app.use(cors());
 var db, courses, exchanges;
 app.get("/", async (req, res) => {
   exchanges = await db.get();
-  return res.status(200).send({ exchanges, courses });
+  return res.status(200).send({data: { exchanges, courses }});
 });
 app.get("/cycles", async (req, res) => {
   exchanges = await db.get();
