@@ -44,7 +44,12 @@ app.post("/getAuthKey", async (req, res) => {
   const authKey = generateAuthKey();
   emailsToAuthKeys[email] = authKey;
   // - send email to user with auth key
-  mailHandle.sendAuthKey(authKey ,email); //TODO
+  try {
+    mailHandle.sendAuthKey(authKey ,email);
+  }
+  catch(err) {
+    console.log(err.message)
+  }
   return res.status(200).send({ success: true });
 });
 
