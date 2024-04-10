@@ -59,7 +59,7 @@ class GraphAlgorithms {
     let find_edge = (i, j) => {
       shuffleArray(clone.E[i]);
       let edge = clone.E[i].filter(e => e.courseB == j)[0];
-      console.log("edge", edge);
+      // console.log("edge", edge);
       if (edge) return {...edge, courseA: i};
       throw new Error('no edge');
     };

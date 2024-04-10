@@ -75,5 +75,3 @@ app.listen(80, '0.0.0.0', async () => {
   courses = await readFile("courses");
   console.log("server started");
 });
-
-//check
