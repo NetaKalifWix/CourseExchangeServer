@@ -36,5 +36,5 @@ const sendAuthKey = async (key, userMail) => {
       });
 };
 
-module.export = {sendEmailOfCycle, sendAuthKey} 
+module.exports = {sendEmailOfCycle, sendAuthKey} 
 

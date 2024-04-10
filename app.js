@@ -5,7 +5,7 @@ const { log } = require("console");
 const cors = require("cors");
 const express = require("express");
 const CourseExchangeGraph = require("./logic");
-// const { sendAuthKey } = require("./mail"); //TODO
+const mailHandle = require("./mail"); //TODO
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -38,13 +38,13 @@ app.post("/login", async (req, res) => {
 });
 
 app.post("/getAuthKey", async (req, res) => {
-  // console.log(req.body);
+  console.log(req.body);
   const email = req.body.email;
   // - save auth
   const authKey = generateAuthKey();
   emailsToAuthKeys[email] = authKey;
   // - send email to user with auth key
-  // sendAuthKey(authKey ,email); //TODO
+  mailHandle.sendAuthKey(authKey ,email); //TODO
   return res.status(200).send({ success: true });
 });
 
@@ -102,7 +102,7 @@ app.get("/backup", async (req, res) => {
   stream.push(null);
 });
 
-app.listen(80, '0.0.0.0', async () => {
+app.listen(80, '0.0.0.0' , async () => {
   db = await Database.connect();
   courses = await readFile("courses");
   console.log("server started");
