@@ -8,6 +8,18 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+
+const emailsToAuthKeys = {};
+
+const generateAuthKey = () => {
+  let authKey = "";
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for (let i = 0; i < 6; i++) {
+    authKey += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return authKey;
+}
+
 app.get("", (req, res) => {
   return res.status(200).send({ exchanges, courses });
 });
@@ -63,6 +75,45 @@ app.get("/backup", async (req, res) => {
   });
   stream.pipe(res);
 });
+
+app.post("/login", async (req, res) => {
+
+  // console.log(req.body);
+  const email = req.body.email;
+  const password = req.body.password;
+  // TODO validate user
+  if (emailsToAuthKeys[email] === password) {
+    // case success
+    return res.status(200).send({ success: true});
+  }
+  //case failure
+  return res.status(200).send({ success: false });
+
+
+
+});
+
+app.post("/getAuthKey", async (req, res) => {
+  // console.log(req.body);
+  const email = req.body.email;
+  // const name = req.body.name;
+
+  // TODO validate user
+  // - send email to user with auth key
+  // - save auth
+
+  const authKey = generateAuthKey();
+  emailsToAuthKeys[email] = authKey;
+
+  // case success
+  return res.status(200).send({ success: true });
+
+  // case failure
+  // return res.status(200).send({ success: false });
+});
+
+
+
 
 let exchanges, courses, cycles;
 const graph = new CourseExchangeGraph();
