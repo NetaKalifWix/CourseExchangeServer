@@ -1,6 +1,6 @@
 
 // Tal: Added cycleLength of 5
-var cycleLength = 8;
+var cycleLength = 5;
 
 class GraphAlgorithms {
 // Tal: Added cycleLength
@@ -16,7 +16,7 @@ class GraphAlgorithms {
     let dfs_visit = (u, cycleLen) => {
       dfs.c[u] = 1;
       cycleLen = cycleLen - 1;
-      if (cycleLen > 0){
+      if (cycleLen >= 0){
         for (let { courseB } of graph.E[u]) {
           let v = courseB;
           if (dfs.c[v] == 0) {
