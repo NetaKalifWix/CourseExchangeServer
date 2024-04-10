@@ -134,6 +134,9 @@ class CourseExchangeGraph {
         courseB: G.V.indexOf(edge.courseB)
       }
     )));
+
+    console.log(cycles);
+    
     return GraphAlgorithms.dfs_find_all_cycles(G).map(cycle => cycle.map(edge => 
       ({...edge, currentCourse: G.V[edge.courseA], desiredCourse: G.V[edge.courseB]})));
   }
