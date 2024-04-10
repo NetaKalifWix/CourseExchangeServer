@@ -9,8 +9,8 @@ class GraphAlgorithms {
       cycles = Array(0);
     let dfs_visit = (u) => {
       dfs.c[u] = 1;
-      for (let { courseB } of graph.E[u]) {
-        let v = courseB;
+      for (let { desiredCourse } of graph.E[u]) {
+        let v = desiredCourse;
         if (dfs.c[v] == 0) {
           dfs.p[v] = u;
           dfs_visit(v);
@@ -29,12 +29,10 @@ class GraphAlgorithms {
     }
     return cycles;
   }
-
   static dfs_find_all_cycles(graph) {
     var clone = JSON.parse(JSON.stringify(graph)),
       cycles = [],
       acc_cycles = [];
-
     let shuffleArray = (array) => {
       for (var i = array.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
@@ -47,10 +45,9 @@ class GraphAlgorithms {
 
     let find_edge = (i, j) => {
       shuffleArray(clone.E[i]);
-      let edge = clone.E[i].filter(e => e.courseB == j)[0];
-      console.log("edge", edge);
-      if (edge) return {...edge, courseA: i};
-        throw new Error('no edge');
+      let edge = clone.E[i].filter((e) => e.desiredCourse == j)[0];
+      if (edge) return { ...edge, currentCourse: i };
+      throw new Error("no edge");
     };
     do {
       cycles = GraphAlgorithms.dfs_find_cycles(
@@ -62,11 +59,10 @@ class GraphAlgorithms {
           let edges_cycle = [...Array(cycle.length - 1).keys()].map((i) =>
             find_edge(cycle[i], cycle[i + 1])
           );
-
           edges_cycle.push(find_edge(cycle[cycle.length - 1], cycle[0]));
 
           edges_cycle.forEach((e) => {
-            clone.E[e.courseA] = clone.E[e.courseA].splice(1);
+            clone.E[e.currentCourse] = clone.E[e.currentCourse].splice(1);
           });
 
           acc_cycles.push(edges_cycle);
@@ -76,33 +72,25 @@ class GraphAlgorithms {
     return acc_cycles;
   }
 }
-
 class CourseExchangeGraph {
   constructor() {
     this.graph = new Map();
   }
 
-
-  static fromExchanges(exchanges) {
-    const graph = new CourseExchangeGraph();
-    exchanges.forEach(ex => graph.addExchange(ex.currentcourse, ex.desiredcourse, ex.name, ex.phone));
-    return graph;
-  }
-
-  addExchange(courseA, courseB, name, phone) {
-    if (!this.graph.has(courseA)) {
-      this.graph.set(courseA, []);
+  addExchange(currentCourse, desiredCourse, name, phone) {
+    if (!this.graph.has(currentCourse)) {
+      this.graph.set(currentCourse, []);
     }
-    this.graph.get(courseA).push({ courseB, name, phone });
+    this.graph.get(currentCourse).push({ desiredCourse, name, phone });
   }
 
-  deleteExchange(courseA, courseB, name, phone) {
-    if (this.graph.has(courseA)) {
+  deleteExchange(currentCourse, desiredCourse, name, phone) {
+    if (this.graph.has(currentCourse)) {
       this.graph.set(
         currentCourse,
         this.graph.get(currentCourse).filter((exchange) => {
           return (
-            exchange.courseB !== courseB ||
+            exchange.desiredCourse !== desiredCourse ||
             exchange.name !== name ||
             exchange.phone !== phone
           );
@@ -110,20 +98,24 @@ class CourseExchangeGraph {
       );
     }
   }
-
   findCycles() {
     var G = {
       V: [...this.graph.keys()],
-      E: null
-    }
-    G.E = [...this.graph.values()].map(edges => edges.map(edge => (
-      {
+      E: null,
+    };
+    G.E = [...this.graph.values()].map((edges) =>
+      edges.map((edge) => ({
         ...edge,
-        courseB: G.V.indexOf(edge.courseB)
-      }
-    )));
-    return GraphAlgorithms.dfs_find_all_cycles(G).map(cycle => cycle.map(edge => 
-      ({...edge, currentCourse: G.V[edge.courseA], desiredCourse: G.V[edge.courseB]})));
+        desiredCourse: G.V.indexOf(edge.desiredCourse),
+      }))
+    );
+    return GraphAlgorithms.dfs_find_all_cycles(G).map((cycle) =>
+      cycle.map((edge) => ({
+        ...edge,
+        currentCourse: G.V[edge.currentCourse],
+        desiredCourse: G.V[edge.desiredCourse],
+      }))
+    );
   }
 }
 module.exports = CourseExchangeGraph;
