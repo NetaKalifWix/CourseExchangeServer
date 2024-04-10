@@ -11,20 +11,20 @@ app.use(cors());
 var db, courses, exchanges;
 
 app.get("/", async (req, res) => {
-  console.log("get from /");
+  console.log("get from ", req.get('host')," to /");
   exchanges = await db.get();
   return res.status(200).send({ exchanges, courses });
 });
 
 app.get("/cycles", async (req, res) => {
-  console.log("get from /cycles");
+  console.log("get from ", req.get('host')," to /cycles");
   exchanges = await db.get();
   let cycles = CourseExchangeGraph.fromExchanges(exchanges).findCycles();
   return res.status(200).send(cycles);
 });
 
 app.patch("/delete", async (req, res) => {
-  console.log("get from /delete");
+  console.log("get from ", req.get('host')," to /delete");
   await db.delete({
     ...req.body.toDelete,
     currentcourse: req.body.toDelete.currentCourse,
@@ -35,7 +35,7 @@ app.patch("/delete", async (req, res) => {
 });
 
 app.patch("/add", async (req, res) => {
-  console.log("get from /add");
+  console.log("get from ", req.get('host')," to /add");
   await db.add({
     currentcourse: req.body.exchange.currentCourse,
     desiredcourse: req.body.exchange.desiredCourse,
@@ -53,12 +53,12 @@ const readFile = async (filename) => {
 };
 
 app.get("/reset_db", async (req, res) => {
-  console.log("get from /reset_db");
+  console.log("get from ", req.get('host')," to /reset_db");
   res.send(await db.run_query("DELETE FROM exchanges"));
 });
 
 app.get("/backup", async (req, res) => {
-  console.log("get from /backup");
+  console.log("get from ", req.get('host'), " to /backup");
   const Readable = require("stream").Readable;
   const stream = new Readable();
   res.set({
