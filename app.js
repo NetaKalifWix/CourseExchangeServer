@@ -19,7 +19,8 @@ app.get("/cycles", async (req, res) => {
   return res.status(200).send(cycles);
 });
 app.patch("/delete", async (req, res) => {
-  await db.delete({...req.body.toDelete,
+  await db.delete({
+    ...req.body.toDelete,
     currentcourse: req.body.toDelete.currentCourse,
     desiredcourse: req.body.toDelete.desiredCourse,
   });
@@ -32,7 +33,7 @@ app.patch("/add", async (req, res) => {
     currentcourse: req.body.exchange.currentCourse,
     desiredcourse: req.body.exchange.desiredCourse,
     name: req.body.exchange.name,
-    phone: req.body.exchange.phone
+    phone: req.body.exchange.phone,
   });
   exchanges = await db.get();
   return res.status(200).send(exchanges);
@@ -49,7 +50,7 @@ app.get("/reset_db", async (req, res) => {
 });
 
 app.get("/backup", async (req, res) => {
-  const Readable = require('stream').Readable;
+  const Readable = require("stream").Readable;
   const stream = new Readable();
   res.set({
     "Content-Disposition": `attachement; filename=${filename}`,
@@ -60,7 +61,7 @@ app.get("/backup", async (req, res) => {
   stream.push(null);
 });
 
-app.listen(80, '0.0.0.0', async () => {
+app.listen(3002, async () => {
   db = await Database.connect();
   courses = await readFile("courses");
   console.log("server started");
