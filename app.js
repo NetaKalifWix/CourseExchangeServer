@@ -5,15 +5,47 @@ const { log } = require("console");
 const cors = require("cors");
 const express = require("express");
 const CourseExchangeGraph = require("./logic");
+const { sendAuthKey } = require("./mail");
 const app = express();
 app.use(express.json());
 app.use(cors());
 var db, courses, exchanges;
 
+const emailsToAuthKeys = {};
+const generateAuthKey = () => {
+  let authKey = "";
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for (let i = 0; i < 6; i++) {
+    authKey += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return authKey;
+}
+
 app.get("/", async (req, res) => {
   console.log("get from ", req.get('host')," to /");
   exchanges = await db.get();
   return res.status(200).send({ exchanges, courses });
+});
+
+app.post("/login", async (req, res) => {
+  // console.log(req.body);
+  const email = req.body.email;
+  const password = req.body.password;
+  if (emailsToAuthKeys[email] === password) {
+    return res.status(200).send({ success: true});
+  }
+  return res.status(200).send({ success: false });
+});
+
+app.post("/getAuthKey", async (req, res) => {
+  // console.log(req.body);
+  const email = req.body.email;
+  // - save auth
+  const authKey = generateAuthKey();
+  emailsToAuthKeys[email] = authKey;
+  // - send email to user with auth key
+  sendAuthKey(authKey ,email);
+  return res.status(200).send({ success: true });
 });
 
 app.get("/cycles", async (req, res) => {

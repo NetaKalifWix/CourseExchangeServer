@@ -1,6 +1,6 @@
 // Using : courier.com
 
-import { CourierClient } from "@trycourier/courier";
+const { CourierClient } = require("@trycourier/courier");
 
 const courier = new CourierClient({ authorizationToken: "pk_prod_QKTA7NVMJNMQ6EQZ9F18Z1TGJTBT" });
 
@@ -21,4 +21,20 @@ const sendEmailOfCycle = async (userMail, courseToGive, toUser, courseToGet, fro
         },
     });
 };
+
+const sendAuthKey = async (key, userMail) => {
+    const { requestId } = await courier.send({
+        message: {
+          to: {
+            email: userMail,
+          },
+          template: "8XY63Q4GSZMYAZH4E9XM3QGGCN1X",
+          data: {
+            key: key,
+          },
+        },
+      });
+};
+
+module.export = {sendEmailOfCycle, sendAuthKey} 
 
