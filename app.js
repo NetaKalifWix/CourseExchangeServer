@@ -5,7 +5,7 @@ const { log } = require("console");
 const cors = require("cors");
 const express = require("express");
 const CourseExchangeGraph = require("./logic");
-const { sendAuthKey } = require("./mail");
+// const { sendAuthKey } = require("./mail"); //TODO
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -44,7 +44,7 @@ app.post("/getAuthKey", async (req, res) => {
   const authKey = generateAuthKey();
   emailsToAuthKeys[email] = authKey;
   // - send email to user with auth key
-  sendAuthKey(authKey ,email);
+  // sendAuthKey(authKey ,email); //TODO
   return res.status(200).send({ success: true });
 });
 
