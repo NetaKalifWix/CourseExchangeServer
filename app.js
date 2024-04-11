@@ -56,7 +56,7 @@ app.post("/getAuthKey", async (req, res) => {
 app.get("/cycles", async (req, res) => {
   console.log("get from ", req.get('host')," to /cycles");
   exchanges = await db.get();
-  let cycles = CourseExchangeGraph.fromExchanges(exchanges).findCycles();
+  let cycles = CourseExchangeGraph.buildGraphFromExchanges(exchanges).findCycles();
   return res.status(200).send(cycles);
 });
 
@@ -107,7 +107,8 @@ app.get("/backup", async (req, res) => {
   stream.push(null);
 });
 
-app.listen(80, '0.0.0.0' , async () => {
+app.listen(3002 , async () => {
+//app.listen(80, '0.0.0.0' , async () => {
   db = await Database.connect();
   courses = await readFile("courses");
   console.log("server started");
