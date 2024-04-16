@@ -53,10 +53,11 @@ app.post("/getAuthKey", async (req, res) => {
   return res.status(200).send({ success: true });
 });
 
-app.get("/cycles", async (req, res) => {
+app.post("/cycles", async (req, res) => {
   console.log("get from ", req.get('host')," to /cycles");
   exchanges = await db.get();
-  let cycles = CourseExchangeGraph.buildGraphFromExchanges(exchanges).findCycles();
+  newEdge = req.body.exchange; // Tal: make sure this is really the new edge!!!!!!!!!
+  let cycles = CourseExchangeGraph.buildGraphFromExchanges(exchanges, newEdge).findCycles(newEdge);
   return res.status(200).send(cycles);
 });
 
