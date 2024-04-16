@@ -22,7 +22,7 @@ const generateAuthKey = () => {
 }
 
 app.get("/", async (req, res) => {
-  console.log("get from ", req.get('host')," to /");
+  // console.log("get from ", req.get('host')," to /");
   exchanges = await db.get();
   return res.status(200).send({ exchanges, courses });
 });
@@ -31,6 +31,7 @@ app.post("/login", async (req, res) => {
   // console.log(req.body);
   const email = req.body.email;
   const password = req.body.password;
+  console.log("/login from name:", req.body.name, " email:", email, " password:", password);
   if (emailsToAuthKeys[email] === password) {
     return res.status(200).send({ success: true});
   }
@@ -38,11 +39,12 @@ app.post("/login", async (req, res) => {
 });
 
 app.post("/getAuthKey", async (req, res) => {
-  console.log(req.body);
   const email = req.body.email;
   // - save auth
   const authKey = generateAuthKey();
   emailsToAuthKeys[email] = authKey;
+  //log:
+  console.log("/getAuthKey from email:", email, " got in return authKey:", authKey);
   // - send email to user with auth key
   try {
     mailHandle.sendAuthKey(authKey ,email);
@@ -54,9 +56,10 @@ app.post("/getAuthKey", async (req, res) => {
 });
 
 app.get("/cycles", async (req, res) => {
-  console.log("get from ", req.get('host')," to /cycles");
+  console.log("/cycles from email:", req.body.email);
   exchanges = await db.get();
   let cycles = CourseExchangeGraph.fromExchanges(exchanges).findCycles();
+  console.log("answear:", cycles);
   return res.status(200).send(cycles);
 });
 
