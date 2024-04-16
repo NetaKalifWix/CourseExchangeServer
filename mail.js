@@ -24,7 +24,8 @@ const sendEmailOfCycle = async (userMail, courseToGive, toUser, courseToGet, fro
 
 const sendAuthKey = async (key, userMail) => {
     console.log("function: sendAuthKey to email:", userMail);
-    const { requestId } = await courier.send({
+    // const { requestId } =
+    courier.send({
         message: {
           to: {
             email: userMail,
@@ -34,7 +35,9 @@ const sendAuthKey = async (key, userMail) => {
             key: key,
           },
         },
-      });
+      }).catch( (e)=>
+        console.log("ERROR: ", e)
+      );
 };
 
 module.exports = {sendEmailOfCycle, sendAuthKey} 
