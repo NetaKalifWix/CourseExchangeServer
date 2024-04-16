@@ -23,7 +23,7 @@ const sendEmailOfCycle = async (userMail, courseToGive, toUser, courseToGet, fro
 };
 
 const sendAuthKey = async (key, userMail) => {
-    console.log("function: sendAuthKey to email:", userMail);
+    console.log("function: sendAuthKey of:", key, " to email:", userMail);
     // const { requestId } =
     courier.send({
         message: {
