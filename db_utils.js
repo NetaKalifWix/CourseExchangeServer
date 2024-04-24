@@ -15,12 +15,12 @@ class Database {
       ssl: true
     });
   }
-
   static async connect(internal = false) {
     const db = new Database(internal);
     try {
       await db.client.connect();
-      await db.create_tables();
+      await db.create_table();
+      await db.create_courses_table();
       console.log("Connected to database");
     } catch (err) {
       console.log("Connection to database failed", err);
@@ -28,7 +28,12 @@ class Database {
     return db;
   }
 
-  async create_tables() {
+  /*
+  ==============================================
+                exchanges table
+  ==============================================
+  */
+  async create_table() {
     return await this.run_query(
       "CREATE TABLE IF NOT EXISTS exchanges (" +
         "name VARCHAR (50) NOT NULL," +
@@ -53,7 +58,6 @@ class Database {
       exchange.desiredcourse
     ]);
   }
-
   async get() {
     return (await this.run_query("SELECT * from exchanges;")).map(exchange => ({
       ...exchange,
@@ -61,7 +65,9 @@ class Database {
       desiredCourse: exchange.desiredcourse
     }));
   }
-
+  async erase_all_data() {
+    return await this.run_query("TRUNCATE TABLE exchanges;");
+  }
   async run_query(query_string, values) {
     try {
       return (await this.client.query(query_string, values)).rows;
@@ -69,5 +75,42 @@ class Database {
       console.log("\n\nQuery failed\n\n", query_string, values, "\n\n", err);
     }
   }
+
+
+  /*
+  ==============================================
+                exchanges table
+  ==============================================
+  */
+  async create_courses_table() {
+      return await this.run_query(
+          "CREATE TABLE IF NOT EXISTS courses (course_name VARCHAR(100)[]);"
+      );
+  }
+  async get_all_courses() {
+    try {
+        const result = await this.run_query("SELECT course_name FROM courses;");
+        return result.map(row => row.course_name);
+    } catch (err) {
+        console.log("Failed to fetch courses:", err);
+        return [];
+    }
+  }
+  async add_course(course) {
+      return await this.run_query(
+          "INSERT INTO courses (course_name) VALUES ($1);",
+          [course]
+      );
+  }
+  async remove_course(course) {
+      return await this.run_query(
+          "DELETE FROM courses WHERE course_name = $1;",
+          [course]
+      );
+  }
+  async erase_courses_table() {
+      return await this.run_query("TRUNCATE TABLE courses;");
+  }
+
 }
 module.exports = Database;

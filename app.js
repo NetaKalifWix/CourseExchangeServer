@@ -11,6 +11,12 @@ app.use(express.json());
 app.use(cors());
 var db, courses, exchanges;
 
+  /*
+  ==============================================
+              internal functions
+  ==============================================
+  */
+
 const emailsToAuthKeys = {};
 const generateAuthKey = () => {
   let authKey = "";
@@ -20,10 +26,23 @@ const generateAuthKey = () => {
   }
   return authKey;
 }
+const readFile = async (filename) => {
+  const dataBuffer = await fsPromises.readFile(filename + ".json");
+  const dataJson = dataBuffer.toString();
+  return JSON.parse(dataJson);
+};
+
+
+  /*
+  ==============================================
+        user log-in and get data functions
+  ==============================================
+  */
 
 app.get("/", async (req, res) => {
   // console.log("get from ", req.get('host')," to /");
   exchanges = await db.get();
+  courses = await db.get_all_courses();
   return res.status(200).send({ exchanges, courses });
 });
 
@@ -38,16 +57,25 @@ app.post("/login", async (req, res) => {
   return res.status(200).send({ success: false });
 });
 
+// sends auth key to email
+// for admin ("admin@gmail.com") auth_key is NetaMetaKeta 
 app.post("/getAuthKey", async (req, res) => {
   const email = req.body.email;
   // - save auth
-  const authKey = generateAuthKey();
+  let isAdmin = false;
+  let authKey = generateAuthKey();
+  if(email == "admin@gmail.com") {
+    isAdmin = true;
+    authKey = "NetaMetaKeta";
+  }
   emailsToAuthKeys[email] = authKey;
   //log:
   console.log("/getAuthKey from email:", email, " got in return authKey:", authKey);
   // - send email to user with auth key
   try {
-    mailHandle.sendAuthKey(authKey ,email);
+    if(!isAdmin){
+      mailHandle.sendAuthKey(authKey ,email);
+    }
   }
   catch(err) {
     console.log(err.message)
@@ -62,6 +90,12 @@ app.get("/cycles", async (req, res) => {
   console.log("answear:", cycles);
   return res.status(200).send(cycles);
 });
+
+  /*
+  ==============================================
+                exchanges table
+  ==============================================
+  */
 
 app.patch("/delete", async (req, res) => {
   console.log("get from ", req.get('host')," to /delete");
@@ -86,11 +120,17 @@ app.patch("/add", async (req, res) => {
   return res.status(200).send(exchanges);
 });
 
-const readFile = async (filename) => {
-  const dataBuffer = await fsPromises.readFile(filename + ".json");
-  const dataJson = dataBuffer.toString();
-  return JSON.parse(dataJson);
-};
+app.delete("/erase_all_exchanges", async (req, res) => {
+  console.log("Request from:", req.get('host'), "to /erase_all_exchanges");
+
+  try {
+    await db.erase_all_data();
+    return res.status(200).send("All data in the exchanges table erased successfully.");
+  } catch (error) {
+    console.error("Error erasing data in exchanges table:", error);
+    return res.status(500).send("Failed to erase data in exchanges table.");
+  }
+});
 
 app.get("/reset_db", async (req, res) => {
   console.log("get from ", req.get('host')," to /reset_db");
@@ -110,8 +150,74 @@ app.get("/backup", async (req, res) => {
   stream.push(null);
 });
 
+
+  /*
+  ==============================================
+                course table
+  ==============================================
+  */
+
+app.patch("/add_course", async (req, res) => {
+  console.log("Request from:", req.get('host'), "to /add_course");
+  
+  const course = req.body.course; // Assuming the course is sent in the request body
+
+  // Check if the course is provided
+  if (!course) {
+    return res.status(400).send("Course data is required.");
+  }
+
+  try {
+    await db.add_course(course);
+    const courses = await db.get_all_courses(); // Get updated list of courses
+    return res.status(200).send(courses);
+  } catch (error) {
+    console.error("Error adding course:", error);
+    return res.status(500).send("Failed to add course.");
+  }
+});
+
+app.delete("/erase_courses_table", async (req, res) => {
+  console.log("Request from:", req.get('host'), "to /erase_courses_table");
+
+  try {
+    await db.erase_courses_table();
+    return res.status(200).send("Courses table erased successfully.");
+  } catch (error) {
+    console.error("Error erasing courses table:", error);
+    return res.status(500).send("Failed to erase courses table.");
+  }
+});
+
+app.delete("/remove_course/:courseName", async (req, res) => {
+  console.log("Request from:", req.get('host'), "to /remove_course");
+
+  const courseName = req.params.courseName;
+
+  // Check if the course name is provided
+  if (!courseName) {
+    return res.status(400).send("Course name is required.");
+  }
+
+  try {
+    await db.remove_course(courseName);
+    const courses = await db.get_all_courses(); // Get updated list of courses
+    return res.status(200).send(courses);
+  } catch (error) {
+    console.error("Error removing course:", error);
+    return res.status(500).send("Failed to remove course.");
+  }
+});
+
+
+  /*
+  ==============================================
+                  listen
+  ==============================================
+  */
+
 app.listen(80, '0.0.0.0' , async () => {
   db = await Database.connect();
-  courses = await readFile("courses");
+  // courses = await readFile("courses"); <- changed it to table and not json
   console.log("server started");
 });
