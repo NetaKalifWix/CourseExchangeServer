@@ -79,7 +79,7 @@ class Database {
 
   /*
   ==============================================
-                exchanges table
+                courses table
   ==============================================
   */
   async create_courses_table() {
@@ -113,4 +113,5 @@ class Database {
   }
 
 }
+
 module.exports = Database;
