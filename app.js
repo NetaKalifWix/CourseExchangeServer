@@ -163,10 +163,10 @@ app.get("/backup", async (req, res) => {
   */
 
 app.patch("/add_course", async (req, res) => {
-  console.log("Request from:", req.get('host'), "to /add_course");
+  console.log("Request from:", req.get('host'), "to /add_course ", req.body.course);
   
-  console.log("C = ", req.body.course);
-  const course = req.body.course[0]; // Assuming the course is sent in the request body
+  // console.log("C = ", req.body.course, " type is =", typeof req.body.course);
+  const course = req.body.course;
 
   // Check if the course is provided
   if (!course) {
