@@ -10,6 +10,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 var db, courses, exchanges;
+let cycles;
 
   /*
   ==============================================
@@ -85,8 +86,6 @@ app.post("/getAuthKey", async (req, res) => {
 
 app.get("/cycles", async (req, res) => {
   console.log("/cycles from email:", req.body.email);
-  exchanges = await db.get();
-  let cycles = CourseExchangeGraph.fromExchanges(exchanges).findCycles();
   console.log("answear:", cycles);
   return res.status(200).send(cycles);
 });
@@ -105,6 +104,7 @@ app.patch("/delete", async (req, res) => {
     desiredcourse: req.body.toDelete.desiredCourse,
   });
   exchanges = await db.get();
+  cycles = CourseExchangeGraph.fromExchanges(exchanges).findCycles();
   return res.status(200).send(exchanges);
 });
 
@@ -117,6 +117,7 @@ app.patch("/add", async (req, res) => {
     phone: req.body.exchange.phone,
   });
   exchanges = await db.get();
+  cycles = CourseExchangeGraph.fromExchanges(exchanges).findCycles();
   return res.status(200).send(exchanges);
 });
 
@@ -125,6 +126,8 @@ app.delete("/erase_all_exchanges", async (req, res) => {
 
   try {
     await db.erase_all_data();
+    exchanges = await db.get();
+    cycles = CourseExchangeGraph.fromExchanges(exchanges).findCycles();
     return res.status(200).send("All data in the exchanges table erased successfully.");
   } catch (error) {
     console.error("Error erasing data in exchanges table:", error);
@@ -135,6 +138,8 @@ app.delete("/erase_all_exchanges", async (req, res) => {
 app.get("/reset_db", async (req, res) => {
   console.log("get from ", req.get('host')," to /reset_db");
   res.send(await db.run_query("DELETE FROM exchanges"));
+  exchanges = await db.get();
+  cycles = CourseExchangeGraph.fromExchanges(exchanges).findCycles();
 });
 
 app.get("/backup", async (req, res) => {
@@ -170,6 +175,8 @@ app.patch("/add_course", async (req, res) => {
   try {
     await db.add_course(course);
     const courses = await db.get_all_courses(); // Get updated list of courses
+    exchanges = await db.get();
+    cycles = CourseExchangeGraph.fromExchanges(exchanges).findCycles();
     return res.status(200).send(courses);
   } catch (error) {
     console.error("Error adding course:", error);
@@ -182,6 +189,8 @@ app.delete("/erase_courses_table", async (req, res) => {
 
   try {
     await db.erase_courses_table();
+    exchanges = await db.get();
+    cycles = CourseExchangeGraph.fromExchanges(exchanges).findCycles();
     return res.status(200).send("Courses table erased successfully.");
   } catch (error) {
     console.error("Error erasing courses table:", error);
@@ -202,6 +211,8 @@ app.delete("/remove_course/:courseName", async (req, res) => {
   try {
     await db.remove_course(courseName);
     const courses = await db.get_all_courses(); // Get updated list of courses
+    exchanges = await db.get();
+    cycles = CourseExchangeGraph.fromExchanges(exchanges).findCycles();
     return res.status(200).send(courses);
   } catch (error) {
     console.error("Error removing course:", error);
@@ -218,6 +229,8 @@ app.delete("/remove_course/:courseName", async (req, res) => {
 
 app.listen(80, '0.0.0.0' , async () => {
   db = await Database.connect();
+  exchanges = await db.get();
+  cycles = CourseExchangeGraph.fromExchanges(exchanges).findCycles();
   // courses = await readFile("courses"); <- changed it to table and not json
   console.log("server started");
 });
