@@ -46,18 +46,18 @@ class GraphAlgorithms {
       cycles = [],
       acc_cycles = [];
 
-    let shuffleArray = (array) => { // Tal: why do we need to shuffle?
-      for (var i = array.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
-      }
-      return array;
-    };
+    // let shuffleArray = (array) => { // Tal: why do we need to shuffle?
+    //   for (var i = array.length - 1; i > 0; i--) {
+    //     var j = Math.floor(Math.random() * (i + 1));
+    //     var temp = array[i];
+    //     array[i] = array[j];
+    //     array[j] = temp;
+    //   }
+    //   return array;
+    // };
 
     let find_edge = (i, j) => {
-      shuffleArray(clone.E[i]);
+      //shuffleArray(clone.E[i]);
       let edge = clone.E[i].filter(e => e.courseB == j)[0];
       // console.log("edge", edge);
       if (edge) return {...edge, courseA: i};
@@ -65,9 +65,12 @@ class GraphAlgorithms {
     };
 
     do {
+      // cycles = GraphAlgorithms.dfs_find_cycles(
+      //   clone, cycleLength,
+      //   shuffleArray([...Array(clone.V.length).keys()])
+      // );
       cycles = GraphAlgorithms.dfs_find_cycles(
-        clone, cycleLength,
-        shuffleArray([...Array(clone.V.length).keys()])
+        clone, cycleLength
       );
       cycles.forEach((cycle) => {
         try {
