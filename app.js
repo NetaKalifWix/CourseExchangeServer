@@ -53,7 +53,7 @@ app.post("/login", async (req, res) => {
   const password = req.body.password;
   console.log("/login from name:", req.body.name, " email:", email, " password:", password);
   if (emailsToAuthKeys[email] === password) {
-    return res.status(200).send({ success: true});
+    return res.status(200).send({ success: true, isAdmin: (email==process.env.ADMIN_EMAIL) });
   }
   return res.status(200).send({ success: false, isAdmin: (email==process.env.ADMIN_EMAIL) });
 });
@@ -85,8 +85,8 @@ app.post("/getAuthKey", async (req, res) => {
 });
 
 app.get("/cycles", async (req, res) => {
-  console.log("/cycles from email:", req.body.email);
-  console.log("answear:", cycles);
+  // console.log("/cycles from email:", req.body.email);
+  // console.log("answear:", cycles);
   return res.status(200).send(cycles);
 });
 
@@ -165,7 +165,8 @@ app.get("/backup", async (req, res) => {
 app.patch("/add_course", async (req, res) => {
   console.log("Request from:", req.get('host'), "to /add_course");
   
-  const course = req.body.course; // Assuming the course is sent in the request body
+  console.log("C = ", req.body.course);
+  const course = req.body.course[0]; // Assuming the course is sent in the request body
 
   // Check if the course is provided
   if (!course) {
@@ -227,7 +228,7 @@ app.delete("/remove_course/:courseName", async (req, res) => {
   ==============================================
   */
 
-app.listen(80, '0.0.0.0' , async () => {
+app.listen(3002 , async () => {
   db = await Database.connect();
   exchanges = await db.get();
   cycles = CourseExchangeGraph.fromExchanges(exchanges).findCycles();
