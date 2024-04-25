@@ -216,25 +216,9 @@ app.delete("/remove_course/:courseName", async (req, res) => {
   ==============================================
   */
 
-app.listen(3002 , async () => {
+app.listen(80, '0.0.0.0' , async () => {
   db = await Database.connect();
   // courses = await readFile("courses"); <- changed it to table and not json
   console.log("server started");
 });
 
-
-
-/*
-קורס גדול רשומים אליו בערך 300 איש
-לכל היותר 100 איש כנראה ירצו החלפה
-אז deg(v)<=100
-
-גודל רכיב קשירות הוא כמסםר הקורסים בתואר מסויים
-ולכן |Vi|<=50
-
-לכן מספר הקשתות ברכיב הקשירות הוא 500 קשתות
-
-יש גג 50 תארים שונים באוניברסיטה
-
-ולכן סך הכל יש 2500 קשתות בכל הגרף!
-*/
