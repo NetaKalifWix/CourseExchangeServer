@@ -200,7 +200,7 @@ app.delete("/erase_courses_table", async (req, res) => {
 });
 
 app.delete("/remove_course/:courseName", async (req, res) => {
-  console.log("Request from:", req.get('host'), "to /remove_course");
+  console.log("Request from:", req.get('host'), "to /remove_course ", req.params.courseName);
 
   const courseName = req.params.courseName;
 
@@ -218,6 +218,29 @@ app.delete("/remove_course/:courseName", async (req, res) => {
   } catch (error) {
     console.error("Error removing course:", error);
     return res.status(500).send("Failed to remove course.");
+  }
+});
+
+app.put("/rename_course/:oldCourseName/:newCourseName", async (req, res) => {
+  console.log("Request from:", req.get('host'), "to /rename_course ", req.params.oldCourseName, req.params.newCourseName);
+
+  const oldCourseName = req.params.oldCourseName;
+  const newCourseName = req.params.newCourseName;
+
+  // Check if both old and new course names are provided
+  if (!oldCourseName || !newCourseName) {
+    return res.status(400).send("Both old and new course names are required.");
+  }
+
+  try {
+    await db.rename_course(oldCourseName, newCourseName);
+    const courses = await db.get_all_courses(); // Get updated list of courses
+    exchanges = await db.get();
+    cycles = CourseExchangeGraph.fromExchanges(exchanges).findCycles();
+    return res.status(200).send(courses);
+  } catch (error) {
+    console.error("Error renaming course:", error);
+    return res.status(500).send("Failed to rename course.");
   }
 });
 

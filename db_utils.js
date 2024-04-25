@@ -110,6 +110,12 @@ class Database {
           [course]
       );
   }
+  async rename_course(oldCourseName, newCourseName) {
+    return await this.run_query(
+        "UPDATE courses SET course_name = $1 WHERE course_name = $2;",
+        [newCourseName, oldCourseName]
+    );
+  }
   async erase_courses_table() {
       return await this.run_query("TRUNCATE TABLE courses;");
   }
