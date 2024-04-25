@@ -54,7 +54,7 @@ app.post("/login", async (req, res) => {
   if (emailsToAuthKeys[email] === password) {
     return res.status(200).send({ success: true});
   }
-  return res.status(200).send({ success: false });
+  return res.status(200).send({ success: false, isAdmin: (email==process.env.ADMIN_EMAIL) });
 });
 
 // sends auth key to email
@@ -64,9 +64,9 @@ app.post("/getAuthKey", async (req, res) => {
   // - save auth
   let isAdmin = false;
   let authKey = generateAuthKey();
-  if(email == "admin@gmail.com") {
+  if(email == process.env.ADMIN_EMAIL) {
     isAdmin = true;
-    authKey = "NetaMetaKeta";
+    authKey = process.env.ADMIN_PASS;
   }
   emailsToAuthKeys[email] = authKey;
   //log:
@@ -80,7 +80,7 @@ app.post("/getAuthKey", async (req, res) => {
   catch(err) {
     console.log(err.message)
   }
-  return res.status(200).send({ success: true });
+  return res.status(200).send({ success: true, isAdminAns: isAdmin });
 });
 
 app.get("/cycles", async (req, res) => {
@@ -216,8 +216,25 @@ app.delete("/remove_course/:courseName", async (req, res) => {
   ==============================================
   */
 
-app.listen(80, '0.0.0.0' , async () => {
+app.listen(3002 , async () => {
   db = await Database.connect();
   // courses = await readFile("courses"); <- changed it to table and not json
   console.log("server started");
 });
+
+
+
+/*
+קורס גדול רשומים אליו בערך 300 איש
+לכל היותר 100 איש כנראה ירצו החלפה
+אז deg(v)<=100
+
+גודל רכיב קשירות הוא כמסםר הקורסים בתואר מסויים
+ולכן |Vi|<=50
+
+לכן מספר הקשתות ברכיב הקשירות הוא 500 קשתות
+
+יש גג 50 תארים שונים באוניברסיטה
+
+ולכן סך הכל יש 2500 קשתות בכל הגרף!
+*/

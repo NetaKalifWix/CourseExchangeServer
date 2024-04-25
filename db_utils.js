@@ -34,6 +34,7 @@ class Database {
   ==============================================
   */
   async create_table() {
+    console.log("create table exchanges");
     return await this.run_query(
       "CREATE TABLE IF NOT EXISTS exchanges (" +
         "name VARCHAR (50) NOT NULL," +
@@ -83,6 +84,7 @@ class Database {
   ==============================================
   */
   async create_courses_table() {
+    console.log("create table courses");
       return await this.run_query(
           "CREATE TABLE IF NOT EXISTS courses (course_name VARCHAR(100)[]);"
       );
