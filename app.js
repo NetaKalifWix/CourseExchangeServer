@@ -221,7 +221,7 @@ app.delete("/remove_course/:courseName", async (req, res) => {
   }
 });
 
-app.put("/rename_course/:oldCourseName/:newCourseName", async (req, res) => {
+app.patch("/rename_course/:oldCourseName/:newCourseName", async (req, res) => {
   console.log("Request from:", req.get('host'), "to /rename_course ", req.params.oldCourseName, req.params.newCourseName);
 
   const oldCourseName = req.params.oldCourseName;
