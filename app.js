@@ -5,7 +5,7 @@ const { log } = require("console");
 const cors = require("cors");
 const express = require("express");
 const CourseExchangeGraph = require("./logic");
-const mailHandle = require("./mail"); //TODO
+const mailHandle = require("./mail");
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -41,14 +41,12 @@ const readFile = async (filename) => {
   */
 
 app.get("/", async (req, res) => {
-  // console.log("get from ", req.get('host')," to /");
   exchanges = await db.get();
   courses = await db.get_all_courses();
   return res.status(200).send({ exchanges, courses });
 });
 
 app.post("/login", async (req, res) => {
-  // console.log(req.body);
   const email = req.body.email;
   const password = req.body.password;
   console.log("/login from name:", req.body.name, " email:", email, " password:", password);
@@ -85,8 +83,6 @@ app.post("/getAuthKey", async (req, res) => {
 });
 
 app.get("/cycles", async (req, res) => {
-  // console.log("/cycles from email:", req.body.email);
-  // console.log("answear:", cycles);
   return res.status(200).send(cycles);
 });
 
@@ -164,8 +160,6 @@ app.get("/backup", async (req, res) => {
 
 app.patch("/add_course", async (req, res) => {
   console.log("Request from:", req.get('host'), "to /add_course ", req.body.course);
-  
-  // console.log("C = ", req.body.course, " type is =", typeof req.body.course);
   const course = req.body.course;
 
   // Check if the course is provided
@@ -175,7 +169,7 @@ app.patch("/add_course", async (req, res) => {
 
   try {
     await db.add_course(course);
-    const courses = await db.get_all_courses(); // Get updated list of courses
+    const courses = await db.get_all_courses();
     exchanges = await db.get();
     cycles = CourseExchangeGraph.fromExchanges(exchanges).findCycles();
     return res.status(200).send(courses);
@@ -211,7 +205,7 @@ app.delete("/remove_course/:courseName", async (req, res) => {
 
   try {
     await db.remove_course(courseName);
-    const courses = await db.get_all_courses(); // Get updated list of courses
+    const courses = await db.get_all_courses();
     exchanges = await db.get();
     cycles = CourseExchangeGraph.fromExchanges(exchanges).findCycles();
     return res.status(200).send(courses);
@@ -234,7 +228,7 @@ app.patch("/rename_course/:oldCourseName/:newCourseName", async (req, res) => {
 
   try {
     await db.rename_course(oldCourseName, newCourseName);
-    const courses = await db.get_all_courses(); // Get updated list of courses
+    const courses = await db.get_all_courses();
     exchanges = await db.get();
     cycles = CourseExchangeGraph.fromExchanges(exchanges).findCycles();
     return res.status(200).send(courses);
@@ -255,7 +249,6 @@ app.listen(80, '0.0.0.0' , async () => {
   db = await Database.connect();
   exchanges = await db.get();
   cycles = CourseExchangeGraph.fromExchanges(exchanges).findCycles();
-  // courses = await readFile("courses"); <- changed it to table and not json
   console.log("server started");
 });
 
