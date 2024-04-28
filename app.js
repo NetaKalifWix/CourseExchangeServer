@@ -251,7 +251,7 @@ app.patch("/rename_course/:oldCourseName/:newCourseName", async (req, res) => {
   ==============================================
   */
 
-app.listen(3002 , async () => {
+app.listen(80, '0.0.0.0' , async () => {
   db = await Database.connect();
   exchanges = await db.get();
   cycles = CourseExchangeGraph.fromExchanges(exchanges).findCycles();
