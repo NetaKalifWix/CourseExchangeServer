@@ -1,18 +1,27 @@
 
-var CYCLE_LENGTH = 5;
+/*
+  ==============================================
+                Algorithem
+  ==============================================
+  */
+
+var CYCLE_LENGTH = 5; // This is the limitation for the cycles length, can be set to different number depending on the preference
 
 class GraphAlgorithms {
+
+  // Beeing called by dfs_find_all_cycles(). Finds all cycles in the graph using DFS and returns the cycle as a list of vertices
   static dfs_find_cycles(graph, cycleLen = CYCLE_LENGTH, vert_order = null) {
     if (!vert_order) vert_order = new Array(graph.V.length).keys();
     var dfs = {
-        p: Array(graph.V.length),
-        c: Array(graph.V.length).fill(0),
+        p: Array(graph.V.length), // The parents array, used to reconstruct the cycle after it was found
+        c: Array(graph.V.length).fill(0), // All vertices starts as "white"
       },
       cycles_last_vertex = Array(0),
       cycles = Array(0);
 
+    // This is the DFS it self  
     let dfs_visit = (u, cycleLen) => {
-      dfs.c[u] = 1;
+      dfs.c[u] = 1; // When discovering a vertice, color it as "grey"
       cycleLen = cycleLen - 1;
       if (cycleLen >= 0){
         for (let { courseB } of graph.E[u]) {
@@ -23,9 +32,10 @@ class GraphAlgorithms {
           } else if (dfs.c[v] == 1) cycles_last_vertex.push([u, v]);
         }
       }
-      dfs.c[u] = 2;
+      dfs.c[u] = 2; // Finish with a vertice, color it as "black"
     };
 
+    // Run the DFS for every undiscovered vertice
     for (let u of vert_order) if (dfs.c[u] == 0) dfs_visit(u, cycleLen);
     for (let [u, s] of cycles_last_vertex) {
       var cycle = [s];
@@ -37,20 +47,20 @@ class GraphAlgorithms {
     }
     return cycles;
   }
-// **********************************
 
+  // Beeing called by findCycles() 
   static dfs_find_all_cycles(graph) {
     var clone = JSON.parse(JSON.stringify(graph)),
       cycles = [],
       acc_cycles = [];
 
-    let find_edge = (i, j) => {
+    let find_edge = (i, j) => { // Gets two vertices and finds an edge in the adjacency list that fits these vertices
       let edge = clone.E[i].filter(e => e.courseB == j)[0];
       if (edge) return {...edge, courseA: i};
       throw new Error('no edge');
     };
 
-    do {
+    do { // TODO: do we need the do-while?
       cycles = GraphAlgorithms.dfs_find_cycles(
         clone, CYCLE_LENGTH
       );
@@ -75,20 +85,27 @@ class GraphAlgorithms {
 }
 
 
-
+/*
+  ==============================================
+                The graph class
+  ==============================================
+  */
 
 class CourseExchangeGraph {
-  constructor() {
+
+  // Graph is represented as adjacency list
+  constructor() {  
     this.graph = new Map();
   }
 
-
-  static fromExchanges(exchanges) {
+  // Building the graph from the database (exchanges)
+  static fromExchanges(exchanges) { 
     const graph = new CourseExchangeGraph();
     exchanges.forEach(ex => graph.addExchange(ex.currentcourse, ex.desiredcourse, ex.name, ex.phone));
     return graph;
   }
 
+  // Each edge's source vertice is the key in the adjacency list, and the value is {the destination vertice, exchange.name, exchange.phone} 
   addExchange(courseA, courseB, name, phone) {
     if (!this.graph.has(courseA)) {
       this.graph.set(courseA, []);
@@ -96,21 +113,7 @@ class CourseExchangeGraph {
     this.graph.get(courseA).push({ courseB, name, phone });
   }
 
-  deleteExchange(courseA, courseB, name, phone) {
-    if (this.graph.has(courseA)) {
-      this.graph.set(
-        currentCourse,
-        this.graph.get(currentCourse).filter((exchange) => {
-          return (
-            exchange.courseB !== courseB ||
-            exchange.name !== name ||
-            exchange.phone !== phone
-          );
-        })
-      );
-    }
-  }
-
+  // This is the function that is beeing called by the server. It returns all the cycles in the graph as a list of all the edges
   findCycles() {
     var G = {
       V: [...this.graph.keys()],
@@ -123,9 +126,8 @@ class CourseExchangeGraph {
       }
     )));
 
-
     return GraphAlgorithms.dfs_find_all_cycles(G).map(cycle => cycle.map(edge => 
-      ({...edge, currentCourse: G.V[edge.courseA], desiredCourse: G.V[edge.courseB]})));
+      ({...edge, currentCourse: G.V[edge.courseA], desiredCourse: G.V[edge.courseB]}))); // Returns the courses by thire names and not indexes.
   }
 }
 
